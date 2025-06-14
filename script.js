@@ -8,7 +8,7 @@ function iniciarJogo() {
   fetch('http://127.0.0.1:5000/pergunta', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ caminho: [], resposta: 'iniciar' }) // seu backend espera "iniciar" para começo
+    body: JSON.stringify({ caminho: [], resposta: 'iniciar' }) 
   })
   .then(r => r.json())
   .then(dados => {
@@ -99,7 +99,7 @@ function reiniciar() {
   animalSugerido = null;
 }
 
-// Função auxiliar para mostrar/esconder divs
+
 function toggleDisplay(id, mostrar) {
   document.getElementById(id).style.display = mostrar ? 'block' : 'none';
 }
@@ -111,4 +111,5 @@ document.getElementById('btn-nao').onclick = () => responder('não');
 document.getElementById('btn-nao-sei').onclick = () => responder('não sei');
 document.getElementById('btn-confirmar-sim').onclick = () => confirmar('sim');
 document.getElementById('btn-confirmar-nao').onclick = () => confirmar('não');
+document.getElementById('btn-nao-sei').onclick = () => responder('não sei');
 document.getElementById('btn-reiniciar').onclick = reiniciar;

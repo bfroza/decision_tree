@@ -1,9 +1,9 @@
+import random
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from controllers.animal_controller import gerar_arvore_decisao
 from copy import deepcopy
 import duckduckgo_search
-
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:8000", "http://127.0.0.1:8000"]}})
@@ -27,8 +27,6 @@ def endpoint_pergunta():
     dados = request.get_json()
     caminho = dados.get('caminho', [])
     resposta = dados.get('resposta', '').lower()
-
-    # 👉 Tratamento para início do jogo (sem resposta ainda)
     if not caminho and resposta in ['', 'iniciar']:
         no_inicial = deepcopy(arvore_global)
 
@@ -47,7 +45,7 @@ def endpoint_pergunta():
             'caminho': caminho
         })
 
-    # Resto da lógica padrão
+
     no_atual = deepcopy(arvore_global)
     for passo in caminho:
         if no_atual['tipo'] == 'folha':
@@ -69,10 +67,24 @@ def endpoint_pergunta():
     elif resposta in ['não', 'nao']:
         caminho.append('false')
     elif resposta in ['não sei', 'nao sei']:
-        return jsonify({
-            'tipo': 'incerto',
-            'mensagem': 'Não sei como continuar com essa resposta.'
-        })
+        proximo_lado = random.choice(['true', 'false'])
+        no_proximo = no_atual[proximo_lado]
+
+        if no_proximo['tipo'] == 'folha':
+            return jsonify({
+                'tipo': 'folha',
+                'animal': no_proximo['animal'],
+                'mensagem': f"Acho que o seu animal é um {no_proximo['animal']}. Estou certo?",
+                'caminho': caminho  
+            })
+        else:
+            return jsonify({
+                'tipo': 'pergunta',
+                'atributo': no_proximo['atributo'],
+                'mensagem': f"Ok, vamos tentar outra. O animal tem a característica '{no_proximo['atributo']}'?",
+                'caminho': caminho  
+            })
+
     else:
         return jsonify({'erro': 'Resposta inválida'}), 400
 
