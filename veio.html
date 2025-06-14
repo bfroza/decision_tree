@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Adivinhação de Animal</title>
+</head>
+<body>
+  <h1>Jogo do Animal</h1>
+  <p id="mensagem">Clique para começar!</p>
+
+  <!-- Botão iniciar jogo -->
+  <div id="botoes-inicio">
+    <button id="btn-iniciar">Iniciar Jogo</button>
+  </div>
+
+  <!-- Botões de pergunta (escondidos no início) -->
+  <div id="botoes-pergunta" style="display:none;">
+    <button onclick="responder('sim')">Sim</button>
+    <button onclick="responder('não')">Não</button>
+    <button onclick="responder('não sei')">Não sei</button>
+  </div>
+
+  <!-- Botões de confirmação -->
+  <div id="botoes-confirmacao" style="display:none;">
+    <p>Estou certo?</p>
+    <button id="btn-confirmar-sim">Sim</button>
+    <button id="btn-confirmar-nao">Não</button>
+  </div>
+  
+  <!-- Botão reiniciar -->
+  <div id="botoes-reiniciar" style="display:none;">
+    <button id="btn-reiniciar">Reiniciar Jogo</button>
+  </div>
+
+  <script>
+    let caminho = [];
+    let animalSugerido = null;
+
+   function iniciarJogo() {
+  document.getElementById('botoes-inicio').style.display = 'none';
+  document.getElementById('mensagem').innerText = 'Pensando...';
+
+  fetch('http://127.0.0.1:5000/pergunta', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ caminho: [], resposta: 'iniciar' })  // <-- alterado aqui
+  })
+  .then(r => r.json())
+  .then(dados => {
+    if (dados.tipo === 'pergunta') {
+      caminho = dados.caminho;
+      animalSugerido = null;
+      document.getElementById('mensagem').innerText = dados.mensagem;
+      document.getElementById('botoes-pergunta').style.display = 'block';
+    } else {
+      document.getElementById('mensagem').innerText = 'Erro ao iniciar o jogo.';
+    }
+  });
+}
+
+    function responder(resposta) {
+      fetch('http://127.0.0.1:5000/pergunta', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ caminho, resposta })
+      })
+      .then(r => r.json())
+      .then(dados => {
+        if (dados.erro) {
+          alert(dados.erro);
+          return;
+        }
+
+        if (dados.tipo === 'folha') {
+          caminho = dados.caminho;
+          animalSugerido = dados.animal;
+          document.getElementById('mensagem').innerText = dados.mensagem;
+          document.getElementById('botoes-pergunta').style.display = 'none';
+          document.getElementById('botoes-confirmacao').style.display = 'block';
+        } else if (dados.tipo === 'pergunta') {
+          caminho = dados.caminho;
+          animalSugerido = null;
+          document.getElementById('mensagem').innerText = dados.mensagem;
+          document.getElementById('botoes-pergunta').style.display = 'block';
+          document.getElementById('botoes-confirmacao').style.display = 'none';
+        } else if (dados.tipo === 'incerto') {
+          document.getElementById('mensagem').innerText = dados.mensagem;
+        }
+      });
+    }
+
+    function confirmar(resposta) {
+      if (!animalSugerido) {
+        alert("Nenhum animal sugerido para confirmar.");
+        return;
+      }
+
+      fetch('http://127.0.0.1:5000/confirmar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ animal: animalSugerido, resposta })
+      })
+      .then(r => r.json())
+      .then(dados => {
+        document.getElementById('mensagem').innerText = dados.resultado;
+        document.querySelectorAll('img').forEach(img => img.remove());
+
+        if (dados.imagem) {
+          const img = document.createElement('img');
+          img.src = dados.imagem;
+          img.alt = animalSugerido;
+          img.style.maxWidth = '300px';
+          document.body.appendChild(img);
+        }
+
+        document.getElementById('botoes-pergunta').style.display = 'none';
+        document.getElementById('botoes-confirmacao').style.display = 'none';
+        document.getElementById('botoes-reiniciar').style.display = 'block';
+
+        caminho = [];
+        animalSugerido = null;
+      });
+    }
+
+    function reiniciar() {
+      document.querySelectorAll('img').forEach(img => img.remove());
+      document.getElementById('mensagem').innerText = "Clique para começar!";
+      document.getElementById('botoes-pergunta').style.display = 'none';
+      document.getElementById('botoes-confirmacao').style.display = 'none';
+      document.getElementById('botoes-reiniciar').style.display = 'none';
+      document.getElementById('botoes-inicio').style.display = 'block';
+
+      caminho = [];
+      animalSugerido = null;
+    }
+
+    // Event listeners
+    document.getElementById('btn-iniciar').onclick = iniciarJogo;
+    document.getElementById('btn-confirmar-sim').onclick = () => confirmar('sim');
+    document.getElementById('btn-confirmar-nao').onclick = () => confirmar('não');
+    document.getElementById('btn-reiniciar').onclick = reiniciar;
+  </script>
+</body>
+</html>
