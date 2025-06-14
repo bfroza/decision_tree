@@ -3,32 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <title>Adivinhação de Animal</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="css/style.css">
   <script defer src="script.js"></script>
 </head>
 <body>
-  <h1>Jogo do Animal</h1>
-  <p id="mensagem">Clique para começar!</p>
+  <center>
+    <header>
+      <h1>Jogo do Animal</h1>
+    </header>
 
-  <div id="botoes-inicio">
-    <button id="btn-iniciar">Iniciar Jogo</button>
-  </div>
+    <div class="Personagem">
+      <img src="img/HandCrossed.png" alt="">
+    </div>
 
-  <div id="botoes-pergunta" style="display:none;">
-    <button id="btn-sim">Sim</button>
-    <button id="btn-nao">Não</button>
-    <button id="btn-nao-sei">Não sei</button>
-  </div>
+    <p id="mensagem">Clique para começar!</p>
 
-  <div id="botoes-confirmacao" style="display:none;">
-    <p>Estou certo?</p>
-    <button id="btn-confirmar-sim">Sim</button>
-    <button id="btn-confirmar-nao">Não</button>
-  </div>
-  
-  <div id="botoes-reiniciar" style="display:none;">
-    <button id="btn-reiniciar">Reiniciar Jogo</button>
-  </div>
+    <div id="botoes-inicio">
+      <button id="btn-iniciar">Iniciar Jogo</button>
+    </div>
 
+    <div id="botoes-pergunta" style="display:none;">
+      <button id="btn-sim">Sim</button>
+      <button id="btn-nao">Não</button>
+      <button id="btn-nao-sei">Não sei</button>
+    </div>
+
+    <div id="botoes-confirmacao" style="display:none;">
+      <p>Estou certo?</p>
+      <button id="btn-confirmar-sim">Sim</button>
+      <button id="btn-confirmar-nao">Não</button>
+    </div>
+    
+    <div id="botoes-reiniciar" style="display:none;">
+      <button id="btn-reiniciar">Reiniciar Jogo</button>
+    </div>
+  </center>
 
 </body>
 </html>
