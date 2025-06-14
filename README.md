@@ -44,4 +44,4 @@ Isso ira rodar o html server, só copie e cole essa URL no navegador "http://loc
 ## Licença
 
 Este projeto está licenciado sob a licença MIT.  
-Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Veja o arquivo [LICENSE](license) para mais detalhes.
