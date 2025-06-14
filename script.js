@@ -71,12 +71,25 @@ function confirmar(resposta) {
     document.querySelectorAll('img').forEach(img => img.remove());
 
     if (dados.imagem) {
-      const img = document.createElement('img');
-      img.src = dados.imagem;
-      img.alt = animalSugerido;
-      img.style.maxWidth = '300px';
-      document.body.appendChild(img);
+    const img = document.createElement('img'); // criar a imagem
+    img.src = dados.imagem;
+    img.alt = animalSugerido;
+    img.style.maxWidth = '500px';
+    img.id = 'img-animal';
+
+    let container = document.getElementById('container-animal');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'container-animal';
+        container.style.textAlign = 'center';
+        container.style.marginTop = '20px';
+        document.body.appendChild(container);
     }
+
+    container.innerHTML = ''; 
+    container.appendChild(img);
+}
+
 
     toggleDisplay('botoes-pergunta', false);
     toggleDisplay('botoes-confirmacao', false);
@@ -88,13 +101,19 @@ function confirmar(resposta) {
 }
 
 function reiniciar() {
-  document.querySelectorAll('img').forEach(img => img.remove());
+  const imgAnimal = document.getElementById('img-animal');
+  if (imgAnimal) imgAnimal.remove();
+  
   document.getElementById('mensagem').innerText = "Clique para começar!";
   toggleDisplay('botoes-pergunta', false);
   toggleDisplay('botoes-confirmacao', false);
   toggleDisplay('botoes-reiniciar', false);
   toggleDisplay('botoes-inicio', true);
-
+  const personagemDiv = document.querySelector('.Personagem');
+  const novaImagem = document.createElement('img');
+  novaImagem.src = 'img/HandCrossed.png';
+  novaImagem.alt = '';
+  personagemDiv.appendChild(novaImagem);
   caminho = [];
   animalSugerido = null;
 }

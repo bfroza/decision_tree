@@ -26,3 +26,10 @@ header {
   max-height: 500px;
   animation: flutuar 3.2s ease-in-out infinite;
 }
+
+#container-animal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
