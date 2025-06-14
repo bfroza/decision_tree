@@ -14,3 +14,15 @@ body {
 header {
     margin-top: 50px;
 }
+
+@keyframes flutuar {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
+
+.Personagem img {
+  max-width: 500px;
+  max-height: 500px;
+  animation: flutuar 3.2s ease-in-out infinite;
+}
