@@ -6,7 +6,7 @@ body {
     background-size: cover;
 }
 
-.Personagem img {
+.character img {
     max-width: 500px;
     max-height: 500px;
 }
@@ -21,7 +21,7 @@ header {
   100% { transform: translateY(0); }
 }
 
-.Personagem img {
+.character img {
   max-width: 500px;
   max-height: 500px;
   animation: flutuar 3.2s ease-in-out infinite;

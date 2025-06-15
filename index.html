@@ -5,6 +5,7 @@
   <title>Adivinhação de Animal</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/animation.js"></script>
   <script defer src="script.js"></script>
 </head>
 <body>
@@ -13,9 +14,11 @@
       <h1>Jogo do Animal</h1>
     </header>
 
-    <div class="Personagem">
-      <img src="img/HandCrossed.png" alt="">
+    <div class="character">
+      <img src="img/HandCrossed.png" alt="" id="imgCharacter">
     </div>
+
+    <!--<button onclick="animationCharacter()">teste</button>-->
 
     <p id="mensagem">Clique para começar!</p>
 
@@ -41,6 +44,5 @@
     <div id="container-animal"></div>
 
   </center>
-
 </body>
 </html>
