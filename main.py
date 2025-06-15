@@ -120,7 +120,10 @@ def endpoint_pergunta():
 def confirmar():
     dados = request.json
     animal = dados.get('animal')
-    resposta = dados.get('resposta')  # 'sim' ou 'não'
+    resposta = dados.get('resposta')
+
+    if not animal or not resposta:
+        return jsonify({'resultado': "Dados incompletos na requisição."}), 400
 
     if resposta.lower() == 'sim':
         url_imagem = buscar_imagem(animal)
@@ -131,17 +134,20 @@ def confirmar():
     else:
         return jsonify({'resultado': "Poxa, não consegui adivinhar. Vamos recomeçar!"})
 def buscar_imagem(animal):
-    with duckduckgo_search.DDGS() as ddgs:
-        resultados = ddgs.images(
-            keywords=animal,
-            region="wt-wt",
-            safesearch="off",
-            max_results=1
-        )
-        if resultados:
-            return resultados[0]['image']
-        else:
-            return None
+    try:
+        with duckduckgo_search.DDGS() as ddgs:
+            resultados = ddgs.images(
+                keywords=animal,
+                region="wt-wt",
+                safesearch="off",
+                max_results=1
+            )
+            for resultado in resultados:
+                return resultado['image']  # Garante que vai pegar a primeira imagem válida
+        return None
+    except Exception as e:
+        print(f"Erro ao buscar imagem: {e}")
+        return None
 
 
 def main():
