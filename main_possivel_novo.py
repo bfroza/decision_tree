@@ -51,11 +51,7 @@ def endpoint_pergunta():
     caminho = dados.get('caminho', [])
     resposta = dados.get('resposta', '').lower()
 
-    # Pergunta n tem nó ainda, pega aleatório 
     if not caminho and resposta in ['', 'iniciar']:
-        no_inicial = deepcopy(arvore_global)
-
-     
         atributo_sorteado = random.choice(list(perguntas.keys()))
         mensagem_personalizada = perguntas[atributo_sorteado]
 
@@ -66,7 +62,6 @@ def endpoint_pergunta():
             'caminho': caminho
         })
 
-    #Movimenta pela arvore
     no_atual = deepcopy(arvore_global)
     for passo in caminho:
         if no_atual['tipo'] == 'folha':
@@ -75,7 +70,6 @@ def endpoint_pergunta():
 
     animais_antes = animais_possiveis(no_atual)
 
-    # Chego no fim da arvore
     if no_atual['tipo'] == 'folha':
         return jsonify({
             'tipo': 'folha',
@@ -84,7 +78,6 @@ def endpoint_pergunta():
             'caminho': caminho,
         })
 
-    #Atualiza a arvore baseando-se na resposta
     if resposta == 'sim':
         caminho.append('true')
     elif resposta in ['não', 'nao']:
@@ -98,7 +91,7 @@ def endpoint_pergunta():
                 'tipo': 'folha',
                 'animal': no_proximo['animal'],
                 'mensagem': f"Acho que o seu animal é um {no_proximo['animal']}. Estou certo?",
-                'caminho': caminho  
+                'caminho': caminho
             })
         else:
             mensagem_personalizada = perguntas.get(no_proximo['atributo'], f"O animal tem a característica '{no_proximo['atributo']}'?")
@@ -106,11 +99,10 @@ def endpoint_pergunta():
                 'tipo': 'pergunta',
                 'atributo': no_proximo['atributo'],
                 'mensagem': mensagem_personalizada,
-                'caminho': caminho  
+                'caminho': caminho
             })
     else:
         return jsonify({'erro': 'Resposta inválida'}), 400
-
 
     no_proximo = deepcopy(arvore_global)
     for passo in caminho:
@@ -124,6 +116,21 @@ def endpoint_pergunta():
     if descartados:
         print(f"Animais descartados nessa pergunta: {descartados}")
 
+    # Aqui o que muda: quando restarem 2 animais, envie eles com as imagens
+    if len(animais_depois) == 2:
+        animal1, animal2 = animais_depois
+        imagem1 = buscar_imagem(animal1)
+        imagem2 = buscar_imagem(animal2)
+
+        return jsonify({
+            'tipo': 'dupla',
+            'animais': [
+                {'nome': animal1, 'imagem': imagem1},
+                {'nome': animal2, 'imagem': imagem2}
+            ],
+            'mensagem': 'Escolha qual desses animais é o seu.',
+            'caminho': caminho
+        })
 
     if no_proximo['tipo'] == 'folha':
         return jsonify({
@@ -134,8 +141,6 @@ def endpoint_pergunta():
         })
     else:
         mensagem_personalizada = perguntas.get(no_proximo['atributo'], f"O animal tem a característica '{no_proximo['atributo']}'?")
-        print(f"Pergunta escolhida: {mensagem_personalizada}")
-        
         return jsonify({
             'tipo': 'pergunta',
             'atributo': no_proximo['atributo'],
