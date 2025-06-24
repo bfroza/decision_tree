@@ -5,12 +5,11 @@ foca,True,False,False,False,True,False,True,False,False,True,True,False,False,Fa
 golfinho,True,False,False,False,True,False,False,False,False,True,False,False,False,False,False,True,False,False,False,False,True,False,False
 zebra,True,False,False,False,False,True,True,False,False,False,True,False,False,False,False,True,False,False,False,True,True,False,False
 cavalo,True,False,False,False,False,True,True,False,False,False,True,False,False,False,False,True,False,False,False,False,True,False,False
-antilope,True,False,False,False,False,True,True,False,False,False,True,False,True,False,False,True,False,False,False,False,True,False,False
 javali,True,False,False,False,True,True,True,False,False,False,True,False,False,True,False,True,False,False,False,False,True,False,False
 elefante,True,False,False,False,False,True,True,False,False,False,True,False,False,True,False,True,False,False,False,False,True,False,False
-girafa,True,False,False,False,False,True,True,False,False,False,True,False,False,False,True,True,False,False,False,False,True,False,False
+hipopotamo,True,False,False,False,False,True,True,False,False,True,True,False,False,True,False,True,False,False,False,False,True,False,False
 rinoceronte,True,False,False,False,False,True,True,False,False,False,True,False,True,False,False,True,False,False,False,False,True,False,False
-hipopotamo,True,False,False,False,False,False,True,False,False,True,True,False,False,True,False,True,False,False,False,False,True,False,False
+girafa,True,False,False,False,False,True,True,False,False,False,True,False,False,False,True,True,False,False,False,False,True,False,False
 urso,True,False,False,False,True,True,True,False,False,False,True,False,False,True,False,True,False,False,False,False,True,False,False
 chimpanze,True,False,False,False,True,True,True,False,False,False,True,False,False,True,False,True,False,False,False,False,False,False,False
 aguia,False,True,False,False,True,False,False,True,False,False,False,True,False,False,False,False,True,True,False,False,True,False,False

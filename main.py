@@ -8,30 +8,6 @@ import duckduckgo_search
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:8000", "http://127.0.0.1:8000"]}})
 
-# Dicionário de perguntas (global)
-perguntas = { 
-    'mamifero': "O seu animal se alimenta de leite quando filhote?", 
-    'ave': "O seu animal consegue voar ou é uma ave?", 
-    'reptil': "O seu animal tem corpo coberto por escamas e sangue frio?", 
-    'anfibio': "O seu animal vive parte do tempo na água e parte em terra?", 
-    'carnivoro': "O seu animal se alimenta principalmente de carne?", 
-    'herbivoro': "O seu animal se alimenta basicamente de plantas?", 
-    'pelos': "O seu animal tem pelos cobrindo o corpo?", 
-    'penas': "O seu animal tem penas?", 
-    'escamas': "O corpo do seu animal é coberto por escamas?", 
-    'aquatico': "O seu animal vive na água?", 
-    'terrestre': "O seu animal vive em terra firme?", 
-    'aereo': "O seu animal costuma voar?", 
-    'chifre': "O seu animal tem chifres?", 
-    'presas': "O seu animal possui presas visíveis?", 
-    'pescoco': "O seu animal tem um pescoço longo?", 
-    'dentes': "O seu animal possui dentes?", 
-    'ovos': "O seu animal bota ovos?", 
-    'bipede': "O seu animal anda em duas patas?", 
-    'venenoso': "O seu animal é venenoso?", 
-    'listras': "O seu animal tem listras no corpo?", 
-    'cauda': "O seu animal possui cauda?" 
-}
 
 arvore_global = gerar_arvore_decisao()
 
@@ -45,28 +21,31 @@ def animais_possiveis(no):
     else:
         return animais_possiveis(no['true']) + animais_possiveis(no['false'])
 
+
 @app.route('/pergunta', methods=['POST'])
 def endpoint_pergunta():
     dados = request.get_json()
     caminho = dados.get('caminho', [])
     resposta = dados.get('resposta', '').lower()
-
-    # Pergunta n tem nó ainda, pega aleatório 
     if not caminho and resposta in ['', 'iniciar']:
         no_inicial = deepcopy(arvore_global)
 
-     
-        atributo_sorteado = random.choice(list(perguntas.keys()))
-        mensagem_personalizada = perguntas[atributo_sorteado]
+        if no_inicial['tipo'] == 'folha':
+            return jsonify({
+                'tipo': 'folha',
+                'animal': no_inicial['animal'],
+                'mensagem': f"Acho que o seu animal é um {no_inicial['animal']}. Estou certo?",
+                'caminho': caminho,
+            })
 
         return jsonify({
             'tipo': 'pergunta',
-            'atributo': atributo_sorteado,
-            'mensagem': mensagem_personalizada,
+            'atributo': no_inicial['atributo'],
+            'mensagem': f"O animal tem a característica '{no_inicial['atributo']}'?",
             'caminho': caminho
         })
 
-    #Movimenta pela arvore
+
     no_atual = deepcopy(arvore_global)
     for passo in caminho:
         if no_atual['tipo'] == 'folha':
@@ -75,7 +54,6 @@ def endpoint_pergunta():
 
     animais_antes = animais_possiveis(no_atual)
 
-    # Chego no fim da arvore
     if no_atual['tipo'] == 'folha':
         return jsonify({
             'tipo': 'folha',
@@ -84,7 +62,6 @@ def endpoint_pergunta():
             'caminho': caminho,
         })
 
-    #Atualiza a arvore baseando-se na resposta
     if resposta == 'sim':
         caminho.append('true')
     elif resposta in ['não', 'nao']:
@@ -101,16 +78,15 @@ def endpoint_pergunta():
                 'caminho': caminho  
             })
         else:
-            mensagem_personalizada = perguntas.get(no_proximo['atributo'], f"O animal tem a característica '{no_proximo['atributo']}'?")
             return jsonify({
                 'tipo': 'pergunta',
                 'atributo': no_proximo['atributo'],
-                'mensagem': mensagem_personalizada,
+                'mensagem': f"Ok, vamos tentar outra. O animal tem a característica '{no_proximo['atributo']}'?",
                 'caminho': caminho  
             })
+
     else:
         return jsonify({'erro': 'Resposta inválida'}), 400
-
 
     no_proximo = deepcopy(arvore_global)
     for passo in caminho:
@@ -124,7 +100,6 @@ def endpoint_pergunta():
     if descartados:
         print(f"Animais descartados nessa pergunta: {descartados}")
 
-
     if no_proximo['tipo'] == 'folha':
         return jsonify({
             'tipo': 'folha',
@@ -133,15 +108,13 @@ def endpoint_pergunta():
             'caminho': caminho,
         })
     else:
-        mensagem_personalizada = perguntas.get(no_proximo['atributo'], f"O animal tem a característica '{no_proximo['atributo']}'?")
-        print(f"Pergunta escolhida: {mensagem_personalizada}")
-        
         return jsonify({
             'tipo': 'pergunta',
             'atributo': no_proximo['atributo'],
-            'mensagem': mensagem_personalizada,
+            'mensagem': f"O animal tem a característica '{no_proximo['atributo']}'?",
             'caminho': caminho,
         })
+
 
 @app.route('/confirmar', methods=['POST'])
 def confirmar():
@@ -160,7 +133,6 @@ def confirmar():
             return jsonify({'resultado': f"Acertei, mas não encontrei imagem do {animal}."})
     else:
         return jsonify({'resultado': "Poxa, não consegui adivinhar. Vamos recomeçar!"})
-
 def buscar_imagem(animal):
     try:
         with duckduckgo_search.DDGS() as ddgs:
@@ -171,11 +143,12 @@ def buscar_imagem(animal):
                 max_results=1
             )
             for resultado in resultados:
-                return resultado['image'] 
+                return resultado['image']  # Garante que vai pegar a primeira imagem válida
         return None
     except Exception as e:
         print(f"Erro ao buscar imagem: {e}")
         return None
+
 
 def main():
     app.run(debug=True, host='127.0.0.1', port=5000)
