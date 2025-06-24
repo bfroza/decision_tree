@@ -70,29 +70,6 @@ function responder(resposta) {
       console.error(err);
     });
 }
-function iniciarJogo() {
-  document.getElementById("botoes-inicio").style.display = "none";
-  document.getElementById("mensagem").innerText = "Pensando...";
-  setCharacterImage("up");
-  handUp = false;
-
-  fetch("http://127.0.0.1:5000/iniciar")
-    .then((r) => r.json())
-    .then((dados) => {
-      if (dados.tipo === "pergunta") {
-        caminho = dados.caminho;
-        animalSugerido = null;
-        document.getElementById("mensagem").innerText = dados.mensagem;
-        toggleDisplay("botoes-pergunta", true);
-      } else {
-        document.getElementById("mensagem").innerText = "Erro ao iniciar o jogo.";
-      }
-    })
-    .catch((err) => {
-      document.getElementById("mensagem").innerText = "Erro ao conectar com o servidor.";
-      console.error(err);
-    });
-}
 
 function confirmar(resposta) {
   if (!animalSugerido) {
@@ -175,7 +152,7 @@ function reiniciar() {
 
   personagemDiv.innerHTML = '';
 
-
+  // Cria e adiciona imagem padrão
   const novaImagem = document.createElement("img");
   novaImagem.src = "img/HandCrossed.png";
   novaImagem.alt = "";
