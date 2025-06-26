@@ -1,0 +1,8 @@
+Animal,carnivoro,aquatico,pescoco,chifre,pelos,terrestre,listras
+tigre,True,False,False,False,True,True,False
+zebra,False,False,False,False,True,True,True
+javali,True,False,False,False,True,True,False
+golfinho,True,True,False,False,False,False,False
+girafa,False,False,True,False,True,True,False
+rinoceronte,False,False,False,True,False,True,False
+foca,True,True,False,False,True,True,False

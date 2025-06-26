@@ -8,6 +8,30 @@ import duckduckgo_search
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:8000", "http://127.0.0.1:8000"]}})
 
+# Dicionário de perguntas amigáveis
+perguntas = {
+    'mamifero': "O seu animal se alimenta de leite quando filhote?",
+    'ave': "O seu animal consegue voar durante um tempo?",
+    'reptil': "O seu animal tem sangue frio (réptil)?",
+    'anfibio': "O seu animal vive parte do tempo na água e parte em terra?",
+    'carnivoro': "O seu animal se alimenta de carne ou insetos?",
+    'herbivoro': "O seu animal se alimenta de plantas?",
+    'pelos': "O seu animal tem pelos cobrindo o corpo?",
+    'penas': "O seu animal tem o corpo coberto de penas?",
+    'escamas': "O corpo do seu animal tem escamas?",
+    'aquatico': "O seu animal vive somente na água?",
+    'terrestre': "O seu animal vive em terra firme uma boa parte?",
+    'aereo': "O seu animal costuma voar?",
+    'chifre': "O seu animal tem chifres?",
+    'presas': "O seu animal possui presas, dentes caninos grandes?",
+    'pescoco': "O seu animal tem um pescoço longo?",
+    'dentes': "O seu animal possui dentes?",
+    'ovos': "O seu animal bota ovos?",
+    'bipede': "O seu animal anda em duas patas?",
+    'venenoso': "O seu animal é venenoso?",
+    'listras': "O seu animal tem listras no corpo?",
+    'cauda': "O seu animal possui cauda longa?"
+}
 
 arvore_global = gerar_arvore_decisao()
 
@@ -21,12 +45,12 @@ def animais_possiveis(no):
     else:
         return animais_possiveis(no['true']) + animais_possiveis(no['false'])
 
-
 @app.route('/pergunta', methods=['POST'])
 def endpoint_pergunta():
     dados = request.get_json()
     caminho = dados.get('caminho', [])
     resposta = dados.get('resposta', '').lower()
+
     if not caminho and resposta in ['', 'iniciar']:
         no_inicial = deepcopy(arvore_global)
 
@@ -41,10 +65,9 @@ def endpoint_pergunta():
         return jsonify({
             'tipo': 'pergunta',
             'atributo': no_inicial['atributo'],
-            'mensagem': f"O animal tem a característica '{no_inicial['atributo']}'?",
+            'mensagem': perguntas.get(no_inicial['atributo'], f"O animal tem a característica '{no_inicial['atributo']}'?"),
             'caminho': caminho
         })
-
 
     no_atual = deepcopy(arvore_global)
     for passo in caminho:
@@ -75,16 +98,15 @@ def endpoint_pergunta():
                 'tipo': 'folha',
                 'animal': no_proximo['animal'],
                 'mensagem': f"Acho que o seu animal é um {no_proximo['animal']}. Estou certo?",
-                'caminho': caminho  
+                'caminho': caminho
             })
         else:
             return jsonify({
                 'tipo': 'pergunta',
                 'atributo': no_proximo['atributo'],
-                'mensagem': f"Ok, vamos tentar outra. O animal tem a característica '{no_proximo['atributo']}'?",
-                'caminho': caminho  
+                'mensagem': perguntas.get(no_proximo['atributo'], f"Ok, vamos tentar outra. O animal tem a característica '{no_proximo['atributo']}'?"),
+                'caminho': caminho
             })
-
     else:
         return jsonify({'erro': 'Resposta inválida'}), 400
 
@@ -111,10 +133,9 @@ def endpoint_pergunta():
         return jsonify({
             'tipo': 'pergunta',
             'atributo': no_proximo['atributo'],
-            'mensagem': f"O animal tem a característica '{no_proximo['atributo']}'?",
+            'mensagem': perguntas.get(no_proximo['atributo'], f"O animal tem a característica '{no_proximo['atributo']}'?"),
             'caminho': caminho,
         })
-
 
 @app.route('/confirmar', methods=['POST'])
 def confirmar():
@@ -133,6 +154,7 @@ def confirmar():
             return jsonify({'resultado': f"Acertei, mas não encontrei imagem do {animal}."})
     else:
         return jsonify({'resultado': "Poxa, não consegui adivinhar. Vamos recomeçar!"})
+
 def buscar_imagem(animal):
     try:
         with duckduckgo_search.DDGS() as ddgs:
@@ -143,12 +165,11 @@ def buscar_imagem(animal):
                 max_results=1
             )
             for resultado in resultados:
-                return resultado['image']  # Garante que vai pegar a primeira imagem válida
+                return resultado['image']
         return None
     except Exception as e:
         print(f"Erro ao buscar imagem: {e}")
         return None
-
 
 def main():
     app.run(debug=True, host='127.0.0.1', port=5000)

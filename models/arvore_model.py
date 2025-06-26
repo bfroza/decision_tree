@@ -1,10 +1,10 @@
 import csv
 import math
 
-def carregar_animais(caminho_arquivo):
+def carregar_animais(caminho_arquivo): #carrega o animais, e linha vira um dict com os atributos
     animais = []
     with open(caminho_arquivo, newline='', encoding='utf-8') as csvfile:
-        leitor = csv.DictReader(csvfile)
+        leitor = csv.DictReader(csvfile) 
         for linha in leitor:
             animal = {}
             for k, v in linha.items():

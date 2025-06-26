@@ -111,7 +111,6 @@ def endpoint_pergunta():
     else:
         return jsonify({'erro': 'Resposta inválida'}), 400
 
-    # Move para o próximo nó na árvore com base no caminho atualizado
     no_proximo = deepcopy(arvore_global)
     for passo in caminho:
         if no_proximo['tipo'] == 'folha':
