@@ -19,13 +19,13 @@ Projeto simples que tenta adivinhar o animal que você está pensando através d
 
 ### 1. Crie uma pasta e clone o repositório nela
 
-### 2. Instale o Flask
+### 2. Instale o Flask, Cors e DuckDuckGo
 
-Se ainda não tiver o Flask instalado, rode:
+Se ainda não tiver as libs instaladas, rode:
 
 ```bash
-pip install flask
-```
+pip install flask flask_cors duckduckgo_search
+``` 
 
 ### 3. Entre na pasta clonada abra um terminal  e execute o backend 
 

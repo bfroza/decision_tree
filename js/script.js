@@ -194,7 +194,7 @@ function setCharacterImage(state) {
 document.getElementById("btn-iniciar").onclick = iniciarJogo;
 document.getElementById("btn-sim").onclick = () => responder("sim");
 document.getElementById("btn-nao").onclick = () => responder("não");
-document.getElementById("btn-nao-sei").onclick = () => responder("não sei");
+// document.getElementById("btn-nao-sei").onclick = () => responder("não sei");
 document.getElementById("btn-confirmar-sim").onclick = () => confirmar("sim");
 document.getElementById("btn-confirmar-nao").onclick = () => confirmar("não");
 document.getElementById("btn-reiniciar").onclick = reiniciar;
